@@ -14,19 +14,16 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        log.info("http={},", http);
-
-        http
+        http.csrf().disable().cors().disable()
             .authorizeHttpRequests(request -> request
                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                .requestMatchers("/", "/login").permitAll()
+                .requestMatchers("/", "/login", "/login_process", "/resources/**", "/css/**", "image/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(login -> login
                 .loginPage("/login") // 로그인페이지 URL
-                .usernameParameter("userid")
-                .passwordParameter("pw")
-                .defaultSuccessUrl("/view/dashboard", true)
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/main", true)
                 .permitAll()
             );
 //            .logout(withDefaults());
